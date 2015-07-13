@@ -1,50 +1,63 @@
+
+var data = [
+  { author: "Mannuel Ferreira", text: "This is not bad at all"},
+  { author: "Denton Pretorius", text: "Yeah I agree"}
+];
+
 var CommentList = React.createClass({
-    render: function() {
-        return (
-            <div className="commentList">
-                <Comment author="Mannuel Ferreira">Wow this is not bad at all.</Comment>
-                <Comment author="Denton Pretorius">Yeah I agree.</Comment>
-            </div>
+  render: function () {
+    var commentNodes = this.props.data.map(function (comment){
+      return (
+          <Comment author="{comment.author}">
+            {comment.text}
+          </Comment>
         );
-    }
+    });
+    return (
+      <div className="commentList">
+        {commentNodes}
+      </div>
+    )
+  }
 });
 
 var CommentForm = React.createClass({
-    render: function() {
-        return (
-            <div className="commentForm">
-                Hello, world! I am a CommentForm.
-            </div>
-        );
-    }
+  render: function () {
+    return (
+      <div className="commentForm">
+        Hello, world! I am a CommentForm.
+      </div>
+    );
+  }
 });
 
 var Comment = React.createClass({
-   render: function() {
-       return (
-           <div className="comment">
-               <h2 className="commentAuthor">
-                   {this.props.author}
-               </h2>
-               {marked(this.props.children.toString())}
-           </div>
-       );
-   }
+  render: function () {
+    var rawMarkup = marked(this.props.children.toString(), {sanitize: true})
+    return (
+      <div className="comment">
+        <h2 className="commentAuthor">
+          {this.props.author}
+        </h2>
+        <span dangerouslySetInnerHTML={{__html: rawMarkup}}/>
+      </div>
+    );
+  }
 });
 
 var CommentBox = React.createClass({
-   render: function() {
-       return (
-           <div className="commentBox">
-               <h1>Comments</h1>
-               <CommentList/>
-               <CommentForm/>
-           </div>
-       );
-   }
+  render: function () {
+    return (
+      <div className="commentBox">
+        <h1>Comments</h1>
+        <CommentList data={this.props.data}/>
+        <CommentForm/>
+      </div>
+    );
+  }
 });
 
 React.render(
-    <CommentBox />,
-    document.getElementById('content')
+  <CommentBox data={data} />,
+  document.getElementById('content')
 );
